@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sabit Umarov · Fullstack Engineer</title>
+<meta name="description" content="Сабит Умаров, Senior Fullstack Engineer: Node.js, React, TypeScript. 6+ лет, удалённо.">
+<meta name="theme-color" content="#070708">
+<script>
+  // тема до первой отрисовки: сохранённая → системная → тёмная
+  (function () {
+    var t = null
+    try { t = localStorage.getItem('theme') } catch (e) {}
+    if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
+    document.documentElement.dataset.theme = t
+  })()
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800;900&family=JetBrains+Mono:wght@400;500;700&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
+</head>
+<body>
+
+<!-- слой 0: гигантское слово за фигурой -->
+<div class="backdrop" aria-hidden="true">
+  <span data-i="0" class="fill">SABIT</span>
+  <span data-i="1">WHO</span>
+  <span data-i="2">WORK</span>
+  <span data-i="3">STACK</span>
+  <span data-i="4">PLAY</span>
+  <span data-i="5">HELLO</span>
+</div>
+
+<!-- слой 1: 3D -->
+<canvas id="world" aria-hidden="true"></canvas>
+<div class="scrim" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- слой 3: HUD -->
+<header class="hud hud-top">
+  <a class="mark" href="#s0" aria-label="В начало"><b>SU</b><i>Sabit Umarov<br>Fullstack Engineer</i></a>
+  <div class="hud-right">
+    <div class="timebox" aria-hidden="true">
+      <span class="lbl">TIME</span><span class="val" id="timeval">×0.02</span>
+      <span class="bar"><i id="timebar"></i></span>
+    </div>
+    <button class="theme" id="theme" type="button" aria-label="Сменить тему">
+      <span class="t-d">DARK</span><span class="knob"></span><span class="t-l">LIGHT</span>
+    </button>
+  </div>
+</header>
+
+<nav class="rail" aria-label="Разделы">
+  <a href="#s0" data-i="0"><i>00</i><b>Intro</b></a>
+  <a href="#s1" data-i="1"><i>01</i><b>Profile</b></a>
+  <a href="#s2" data-i="2"><i>02</i><b>Work</b></a>
+  <a href="#s3" data-i="3"><i>03</i><b>Stack</b></a>
+  <a href="#s4" data-i="4"><i>04</i><b>Pet projects</b></a>
+  <a href="#s5" data-i="5"><i>05</i><b>Contact</b></a>
+</nav>
+
+<footer class="hud hud-bottom" aria-hidden="true">
+  <div class="pose"><span class="lbl">POSE</span> <span id="posename">00 · REACH</span></div>
+  <div class="coords" id="coords">X 0.00 · Y 0.00 · Z 0.00</div>
+  <div class="hint" id="hint">SCROLL = TIME <span class="arrow">↓</span></div>
+</footer>
+
+<main id="main">
+
+  <section class="s s-hero" id="s0" data-side="left">
+    <div class="wrap">
+      <p class="kicker rv"><span class="dot"></span>Senior Fullstack Engineer · Node.js / React / TypeScript</p>
+      <h1 class="display rv">
+        <span class="ln"><span>Довожу продукт</span></span>
+        <span class="ln"><span>от архитектуры</span></span>
+        <span class="ln"><span>до <em>production.</em></span></span>
+      </h1>
+      <div class="hero-foot rv">
+        <p>6+ лет в разработке. React, Vue 3, NestJS, PostgreSQL.<br>Удалённо, UTC+3.</p>
+        <p class="mono">Мир замер.<br>Время идёт, только пока ты скроллишь.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="s" id="s1" data-side="right">
+    <div class="wrap">
+      <p class="tag rv"><i>01</i> Profile</p>
+      <h2 class="h2 rv">Пишу обе стороны продукта и&nbsp;отвечаю за результат целиком.</h2>
+      <p class="lead rv">Fullstack-разработчик: backend на NestJS и PostgreSQL, frontend на React и Vue&nbsp;3. Был тимлидом frontend-команды, сейчас веду продукт в одиночку: от требований до релиза.</p>
+      <dl class="stats rv">
+        <div><dt>6+</dt><dd>лет в коммерческой разработке</dd></div>
+        <div><dt>3&thinsp;000</dt><dd>онлайн в продукте, которым руководил по фронту</dd></div>
+        <div><dt>40+</dt><dd>PR в месяц на code review</dd></div>
+        <div><dt>100+</dt><dd>тестов на критическую логику</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="s s-work" id="s2" data-side="center">
+    <div class="wrap panel rv">
+      <p class="tag"><i>02</i> Work <span class="count"><b id="carnum">01</b> / 04</span></p>
+      <div class="car" id="car" tabindex="0" role="group" aria-roledescription="карусель" aria-label="Опыт работы">
+        <article class="slide on" data-name="Light">
+          <div class="sl-a">
+          <p class="years">2026 — сейчас</p>
+          <h2 class="title">Light</h2>
+          <p class="role">Fullstack Engineer · платформа для фотостудии</p>
+          <p class="lead">Спроектировал, разработал и запустил платформу в одиночку: от архитектуры до production.</p>
+          </div>
+          <div class="sl-b">
+          <ul class="facts">
+            <li><b>React · NestJS · PostgreSQL</b></li>
+            <li>Оплата через ЮKassa с вебхуками</li>
+            <li>Файловое хранилище, уведомления, SSE</li>
+          </ul>
+          <div class="metrics"><div><b>1</b><span>разработчик на весь продукт</span></div><div><b>100+</b><span>тестов, CI/CD</span></div></div>
+          </div>
+        </article>
+        <article class="slide" data-name="Valletta">
+          <div class="sl-a">
+          <p class="years">2023 — 2026</p>
+          <h2 class="title">Valletta Software</h2>
+          <p class="role">Fullstack Engineer · заказная разработка, международные заказчики</p>
+          <p class="lead">Мультитенантная CRM с нуля, аддон для Microsoft Word и AI-продукты на OpenAI API.</p>
+          </div>
+          <div class="sl-b">
+          <ul class="facts">
+            <li><b>React · NestJS · PostgreSQL</b></li>
+            <li>Ролевая модель доступа, JWT</li>
+            <li>Аддон для Word на React + Office.js, стриминг LLM через SSE</li>
+          </ul>
+          <div class="metrics"><div><b>16</b><span>языков интерфейса</span></div><div><b>3</b><span>года</span></div></div>
+          </div>
+        </article>
+        <article class="slide" data-name="TastyDROP">
+          <div class="sl-a">
+          <p class="years">2021 — 2023</p>
+          <h2 class="title">TastyDROP</h2>
+          <p class="role">Frontend Engineer → Team Lead · iGaming, онлайн до 3 000</p>
+          <p class="lead">Два проекта на Nuxt 3 / Vue 3 с нуля, real-time на WebSocket, команда из трёх разработчиков.</p>
+          </div>
+          <div class="sl-b">
+          <ul class="facts">
+            <li><b>Nuxt 3 · Vue 3 · TypeScript</b></li>
+            <li>UI-kit в Storybook, Feature-Sliced Design</li>
+            <li>Playwright и Vitest в CI: 0 регрессий за 9 месяцев</li>
+          </ul>
+          <div class="metrics three"><div><b>−40%</b><span>LCP</span></div><div><b>−50%</b><span>INP</span></div><div><b>−30%</b><span>бандл, до −40%</span></div></div>
+          </div>
+        </article>
+        <article class="slide" data-name="Platrum">
+          <div class="sl-a">
+          <p class="years">2020 — 2021</p>
+          <h2 class="title">Platrum</h2>
+          <p class="role">Frontend Engineer · B2B-сервис для управления компанией</p>
+          <p class="lead">Frontend-логика модулей «Задачи» и «Календарь».</p>
+          </div>
+          <div class="sl-b">
+          <ul class="facts">
+            <li><b>Vue 2 · TypeScript</b></li>
+            <li>Обработка дат и часовых поясов для международных клиентов</li>
+          </ul>
+          <div class="metrics"><div><b>1</b><span>год, первая команда</span></div></div>
+          </div>
+        </article>
+      </div>
+      <div class="carnav">
+        <button type="button" class="arrow" id="carprev" aria-label="Предыдущий проект">←</button>
+        <div class="tabs" id="cartabs"></div>
+        <button type="button" class="arrow" id="carnext" aria-label="Следующий проект">→</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="s" id="s3" data-side="left">
+    <div class="wrap wide">
+      <p class="tag rv"><i>03</i> Stack</p>
+      <h2 class="h2 rv">Инструменты, которыми работаю каждый день.</h2>
+      <div class="stack rv">
+        <div class="col">
+          <h3>Frontend</h3>
+          <ul><li>React</li><li>TypeScript</li><li>Vue 3 / Nuxt 3</li><li>Redux · TanStack Query</li><li>Tailwind · MUI</li><li>Storybook · FSD</li></ul>
+        </div>
+        <div class="col">
+          <h3>Backend</h3>
+          <ul><li>Node.js</li><li>NestJS</li><li>PostgreSQL</li><li>REST API</li><li>WebSocket · SSE</li><li>JWT</li></ul>
+        </div>
+        <div class="col">
+          <h3>Delivery</h3>
+          <ul><li>Docker</li><li>CI/CD</li><li>AWS S3</li><li>Playwright</li><li>Vitest</li><li>Sentry</li></ul>
+        </div>
+        <div class="col">
+          <h3>Integrations</h3>
+          <ul><li>OpenAI API</li><li>ЮKassa</li><li>Office.js</li><li>Microfrontends</li><li>i18n · 16 языков</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="s" id="s4" data-side="left">
+    <div class="wrap wide">
+      <p class="tag rv"><i>04</i> Pet projects</p>
+      <h2 class="h2 rv">Что делаю для себя.</h2>
+      <ul class="pets rv">
+        <li>
+          <a href="https://github.com/x1as/pondlight" target="_blank" rel="noopener">
+            <span class="n">01</span><b>Pondlight</b><i>↗</i>
+            <p>Уютная пиксельная рыбалка, где водоём читается как карта.</p>
+            <span class="st">Godot 4 · GDScript</span>
+          </a>
+          <a class="extra" href="https://x1as.github.io/pondlight/" target="_blank" rel="noopener">▶ играть в браузере</a>
+        </li>
+        <li>
+          <a href="https://github.com/x1as/movie-tierlist" target="_blank" rel="noopener">
+            <span class="n">02</span><b>Movie tierlist</b><i>↗</i>
+            <p>Тирлист фильмов и сериалов на 735 позиций: drag &amp; drop, колода карточек, итоги по вкусу.</p>
+            <span class="st">TypeScript</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://github.com/x1as/tower-mmo" target="_blank" rel="noopener">
+            <span class="n">03</span><b>Tower MMO</b><i>↗</i>
+            <p>Браузерная игра, ранняя стадия.</p>
+            <span class="st">React · Phaser · Zustand · TypeScript</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="s s-contact" id="s5" data-side="center">
+    <div class="wrap wide">
+      <p class="tag rv"><i>05</i> Contact</p>
+      <h2 class="giant rv">Напиши<br>мне<em>.</em></h2>
+      <div class="links rv">
+        <a href="https://t.me/umarovsm" target="_blank" rel="noopener"><span>Telegram</span><b>@umarovsm</b><i>↗</i></a>
+        <a href="mailto:umarov.s.work@gmail.com"><span>Email</span><b>umarov.s.work@gmail.com</b><i>↗</i></a>
+        <a href="https://github.com/x1as" target="_blank" rel="noopener"><span>GitHub</span><b>x1as</b><i>↗</i></a>
+        <a href="https://www.linkedin.com/in/sabit-umarov" target="_blank" rel="noopener"><span>LinkedIn</span><b>/in/sabit-umarov</b><i>↗</i></a>
+      </div>
+      <p class="mono fin rv">© 2026 Sabit Umarov · время снова остановилось</p>
+    </div>
+  </section>
+
+</main>
+
+<noscript><style>.rv{opacity:1!important;transform:none!important}</style></noscript>
+<script type="module" src="main.js"></script>
+</body>
+</html>
