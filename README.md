@@ -1,5 +1,7 @@
 <p align="center"><img src="docs/hero-dark.webp" alt="Портфолио: первый экран в тёмной теме" width="100%"></p>
 
+<p align="center"><img src="icon-192.png" alt="" width="72"></p>
+
 <h1 align="center">x1as.github.io</h1>
 
 <p align="center">
