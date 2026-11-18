@@ -378,6 +378,8 @@ $('#galnext').addEventListener('click', () => setPet(pet + 1))
   gal.addEventListener('click', e => { if (moved) { e.preventDefault(); moved = false } }, true)
   gal.addEventListener('dragstart', e => e.preventDefault())
 }
+// кадры галереи подгружаем заранее, в простое: при листании они уже в кэше, а не грузятся на глазах
+addEventListener('load', () => (window.requestIdleCallback || setTimeout)(() => $$('#gal img').forEach(img => { img.loading = 'eager' }), 1500))
 // поза секции PETS: смесь поз двух проектов
 const petPose = { root: { p: [0, 0, 0], r: [0, 0, 0] }, e: 0 }
 for (const n of JOINTS) petPose[n] = [0, 0, 0]
