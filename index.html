@@ -199,34 +199,93 @@
     </div>
   </section>
 
-  <section class="s" id="s4" data-side="left">
-    <div class="wrap wide">
-      <p class="tag rv"><i>04</i> Pet projects</p>
-      <h2 class="h2 rv">Что делаю для себя.</h2>
-      <ul class="pets rv">
-        <li>
-          <a href="https://github.com/x1as/pondlight" target="_blank" rel="noopener">
-            <span class="n">01</span><b>Pondlight</b><i>↗</i>
-            <p>Уютная пиксельная рыбалка, где водоём читается как карта.</p>
-            <span class="st">Godot 4 · GDScript</span>
-          </a>
-          <a class="extra" href="https://x1as.github.io/pondlight/" target="_blank" rel="noopener">▶ играть в браузере</a>
-        </li>
-        <li>
-          <a href="https://github.com/x1as/movie-tierlist" target="_blank" rel="noopener">
-            <span class="n">02</span><b>Movie tierlist</b><i>↗</i>
-            <p>Тирлист фильмов и сериалов на 735 позиций: drag &amp; drop, колода карточек, итоги по вкусу.</p>
-            <span class="st">TypeScript</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://github.com/x1as/tower-mmo" target="_blank" rel="noopener">
-            <span class="n">03</span><b>Tower MMO</b><i>↗</i>
-            <p>Браузерная игра, ранняя стадия.</p>
-            <span class="st">React · Phaser · Zustand · TypeScript</span>
-          </a>
-        </li>
-      </ul>
+  <section class="s s-pets" id="s4" data-side="left">
+    <div class="wrap panel gal-wrap rv">
+      <p class="tag"><i>04</i> Pet projects <span class="count"><b id="galnum">01</b> / 04</span></p>
+      <div class="gal" id="gal" data-d="1" tabindex="0" role="group" aria-roledescription="карусель" aria-label="Pet-проекты">
+
+        <article class="pj on" data-name="Pondlight" data-pose="0" aria-label="Pondlight">
+          <a class="t t-a" href="https://x1as.github.io/pondlight/" target="_blank" rel="noopener" style="--i:0"><img src="img/pets/pond-1.webp" width="1280" height="720" alt="Pondlight: водоём-сетка с подсказкой по клетке" decoding="async"><span class="cap">Водоём читается как карта</span></a>
+          <div class="t t-info" style="--i:1">
+            <p class="kind">01 · Игра · Godot</p>
+            <h3>Pondlight</h3>
+            <p class="desc">Уютная пиксельная рыбалка: у каждой клетки воды свой характер, от места зависит, кто клюнет.</p>
+            <ul class="pts"><li>Правила вне сцены, данные в JSON</li><li>Графика и звук из Python-скриптов</li><li>Windows, браузер, Яндекс Игры</li></ul>
+            <p class="st">Godot 4.7 · GDScript · Python</p>
+            <div class="go"><a class="play" href="https://x1as.github.io/pondlight/" target="_blank" rel="noopener">▶ Играть</a><a href="https://github.com/x1as/pondlight" target="_blank" rel="noopener">GitHub <i>↗</i></a></div>
+          </div>
+          <a class="t t-b" href="https://x1as.github.io/pondlight/" target="_blank" rel="noopener" style="--i:2"><img src="img/pets/pond-2.webp" width="1280" height="720" alt="Pondlight: бой с рыбой на ледяном озере" loading="lazy" decoding="async"><span class="cap">Бой: леска краснеет от натяжения</span></a>
+          <a class="t t-c" href="https://x1as.github.io/pondlight/" target="_blank" rel="noopener" style="--i:3"><img src="img/pets/pond-3.webp" width="1280" height="720" alt="Pondlight: подсчёт улова фишками" loading="lazy" decoding="async"><span class="cap">Цена улова собирается фишками</span></a>
+          <div class="t t-fact" style="--i:4">
+            <b>386</b>
+            <p>автотестов на правила игры, бот-игрок проверяет баланс</p>
+          </div>
+          <a class="t t-d" href="https://x1as.github.io/pondlight/" target="_blank" rel="noopener" style="--i:5"><img src="img/pets/pond-4.webp" width="1280" height="720" alt="Pondlight: карта четырёх водоёмов" loading="lazy" decoding="async"><span class="cap">Четыре водоёма, у каждого своя погода и музыка</span></a>
+        </article>
+
+        <article class="pj alt" data-name="Rampline" data-pose="1" aria-label="Rampline">
+          <a class="t t-a" href="https://x1as.github.io/rampline/" target="_blank" rel="noopener" style="--i:0"><img src="img/pets/ramp-1.webp" width="1280" height="720" alt="Rampline: меню и демо-заезд бота на карте Daybreak" loading="lazy" decoding="async"><span class="cap">За меню едет бот на той же физике</span></a>
+          <div class="t t-info" style="--i:1">
+            <p class="kind">02 · Игра · браузер, мышь и клавиатура</p>
+            <h3>Rampline</h3>
+            <p class="desc">Surf в духе Source: физика 100 тиков, разгон стрейфом, 10 карт от T1 до T10.</p>
+            <ul class="pts"><li>Коллизии по выпуклым брашам</li><li>Карты из seed, проверка ботом</li><li>Одна страница 150 КБ</li></ul>
+            <p class="st">JavaScript · three.js · Node.js</p>
+            <div class="go"><a class="play" href="https://x1as.github.io/rampline/" target="_blank" rel="noopener">▶ Играть</a><a href="https://github.com/x1as/rampline" target="_blank" rel="noopener">GitHub <i>↗</i></a></div>
+          </div>
+          <a class="t t-b" href="https://x1as.github.io/rampline/" target="_blank" rel="noopener" style="--i:2"><img src="img/pets/ramp-2.webp" width="1280" height="720" alt="Rampline: карта Cinder Run" loading="lazy" decoding="async"><span class="cap">Cinder Run · T3</span></a>
+          <a class="t t-c" href="https://x1as.github.io/rampline/" target="_blank" rel="noopener" style="--i:3"><img src="img/pets/ramp-3.webp" width="1280" height="720" alt="Rampline: карта Aurora Spine" loading="lazy" decoding="async"><span class="cap">Aurora Spine · T4</span></a>
+          <div class="t t-fact" style="--i:4">
+            <b>10/10</b>
+            <p>карт проходит эксперт-бот без смертей, наивный ни одной</p>
+          </div>
+          <a class="t t-d" href="https://x1as.github.io/rampline/" target="_blank" rel="noopener" style="--i:5"><img src="img/pets/ramp-4.webp" width="1280" height="720" alt="Rampline: заезд от третьего лица" loading="lazy" decoding="async"><span class="cap">Заезд от третьего лица</span></a>
+        </article>
+
+        <article class="pj" data-name="Tower MMO" data-pose="2" aria-label="Tower MMO">
+          <a class="t t-a" href="https://x1as.github.io/tower-mmo/" target="_blank" rel="noopener" style="--i:0"><img src="img/pets/tower-1.webp" width="1280" height="720" alt="Tower MMO: волна врагов на изометрической карте" loading="lazy" decoding="async"><span class="cap">Волна идёт по изометрической карте</span></a>
+          <div class="t t-info" style="--i:1">
+            <p class="kind">03 · Игра · ранняя стадия</p>
+            <h3>Tower MMO</h3>
+            <p class="desc">Изометрический tower defense с RPG-лутом: аугменты из врагов и сундуков, кузница.</p>
+            <ul class="pts"><li>Игра в Phaser, интерфейс на React</li><li>Лут с редкостью, кузница 5 → 1</li><li>Босс каждые 5 волн</li></ul>
+            <p class="st">React · Phaser 3 · TypeScript · Vite</p>
+            <div class="go"><a class="play" href="https://x1as.github.io/tower-mmo/" target="_blank" rel="noopener">▶ Играть</a><a href="https://github.com/x1as/tower-mmo" target="_blank" rel="noopener">GitHub <i>↗</i></a></div>
+          </div>
+          <a class="t t-b" href="https://x1as.github.io/tower-mmo/" target="_blank" rel="noopener" style="--i:2"><img src="img/pets/tower-3.webp" width="1280" height="720" alt="Tower MMO: четвёртая волна" loading="lazy" decoding="async"><span class="cap">Волна 4: открыты башни II грейда</span></a>
+          <a class="t t-c" href="https://x1as.github.io/tower-mmo/" target="_blank" rel="noopener" style="--i:3"><img src="img/pets/tower-2.webp" width="1280" height="720" alt="Tower MMO: магазин сундуков" loading="lazy" decoding="async"><span class="cap">Сундуки с аугментами</span></a>
+          <div class="t t-fact" style="--i:4">
+            <b>8 · 9</b>
+            <p>башен и типов врагов, у врагов свои сопротивления</p>
+          </div>
+          <a class="t t-d" href="https://x1as.github.io/tower-mmo/" target="_blank" rel="noopener" style="--i:5"><img src="img/pets/tower-4.webp" width="1280" height="720" alt="Tower MMO: кузница аугментов" loading="lazy" decoding="async"><span class="cap">Кузница: 5 обычных → 1 редкий</span></a>
+        </article>
+
+        <article class="pj alt" data-name="Кинотир" data-pose="3" aria-label="Кинотир">
+          <a class="t t-a" href="https://x1as.github.io/movie-tierlist/" target="_blank" rel="noopener" style="--i:0"><img src="img/pets/tier-1.webp" width="1280" height="720" alt="Кинотир: тиры S–D и каталог постеров" loading="lazy" decoding="async"><span class="cap">Тиры S–D, перетаскивание из каталога</span></a>
+          <div class="t t-info" style="--i:1">
+            <p class="kind">04 · Веб-приложение</p>
+            <h3>Кинотир</h3>
+            <p class="desc">Тирлист на 735 фильмов и сериалов: drag &amp; drop, колода карточек, разбор вкуса.</p>
+            <ul class="pts"><li>Выгрузка в код: deflate + base64url</li><li>Без бэкенда, всё в localStorage</li><li>Постеры: Википедия и TVmaze</li></ul>
+            <p class="st">Vue 3 · TypeScript · Vite · Three.js</p>
+            <div class="go"><a class="play" href="https://x1as.github.io/movie-tierlist/" target="_blank" rel="noopener">▶ Открыть</a><a href="https://github.com/x1as/movie-tierlist" target="_blank" rel="noopener">GitHub <i>↗</i></a></div>
+          </div>
+          <a class="t t-b" href="https://x1as.github.io/movie-tierlist/" target="_blank" rel="noopener" style="--i:2"><img src="img/pets/tier-2.webp" width="1280" height="720" alt="Кинотир: колода карточек" loading="lazy" decoding="async"><span class="cap">Колода: бросай карточку на тир</span></a>
+          <a class="t t-c" href="https://x1as.github.io/movie-tierlist/" target="_blank" rel="noopener" style="--i:3"><img src="img/pets/tier-3.webp" width="1280" height="720" alt="Кинотир: итоги и кино-тип" loading="lazy" decoding="async"><span class="cap">Кино-тип из четырёх букв</span></a>
+          <div class="t t-fact" style="--i:4">
+            <b>735</b>
+            <p>фильмов и сериалов в каталоге</p>
+          </div>
+          <a class="t t-d" href="https://x1as.github.io/movie-tierlist/" target="_blank" rel="noopener" style="--i:5"><img src="img/pets/tier-4.webp" width="1280" height="720" alt="Кинотир: рейтинг жанров" loading="lazy" decoding="async"><span class="cap">Жанры, форматы и эпохи по оценкам</span></a>
+        </article>
+
+      </div>
+      <div class="carnav">
+        <button type="button" class="arrow" id="galprev" aria-label="Предыдущий проект">←</button>
+        <div class="tabs" id="galtabs"></div>
+        <button type="button" class="arrow" id="galnext" aria-label="Следующий проект">→</button>
+      </div>
     </div>
   </section>
 

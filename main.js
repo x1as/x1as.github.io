@@ -116,6 +116,38 @@ for (const [s, sx] of [['L', 1], ['R', -1]]) {
   part(new THREE.BoxGeometry(0.085, 0.06, 0.22), J['kn' + s], 0, -0.43, 0.065)
 }
 
+// предметы для поз галереи: живут в руке, проявляются масштабом, в разлёт не входят
+const propMat = new THREE.MeshStandardMaterial({ flatShading: true, roughness: 0.5, metalness: 0.1 })
+function prop(geo, parent, x, y, z) {
+  const m = new THREE.Mesh(geo, propMat); m.position.set(x, y, z)
+  m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 12), edgeMat))
+  parent.add(m); return m
+}
+const PROPS = {}
+{ // удочка: в левой кисти, уходит вверх; леска висит от кончика отвесно
+  const g = new THREE.Group(); g.position.set(0, -0.34, 0.02); g.rotation.set(-1.25, 0, -0.5)
+  prop(cyl(0.011, 0.02, 0.85, 5), g, 0, -0.425, 0)
+  const tip = new THREE.Object3D(); tip.position.set(0, -0.85, 0); g.add(tip)
+  const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]), edgeMat)
+  line.frustumCulled = false
+  const bob = new THREE.Mesh(ball(0.028), propMat); bob.add(new THREE.LineSegments(new THREE.EdgesGeometry(bob.geometry), edgeMat))
+  scene.add(line, bob)
+  PROPS.rod = { g, parent: 'elL', tip, line, bob }
+}
+{ // кристалл-башня: парит перед грудью над ладонями
+  const g = new THREE.Group(); g.position.set(0, 0.1, 0.4)
+  prop(new THREE.OctahedronGeometry(0.11, 0), g, 0, 0, 0).scale.set(1, 1.9, 1)
+  prop(cyl(0.07, 0.1, 0.06, 6), g, 0, -0.29, 0)
+  PROPS.crystal = { g, parent: 'chest', float: 0.08 }
+}
+{ // карточка с постером в правой руке: рамка светлая, «постер» цветом фигуры
+  const g = new THREE.Group(); g.position.set(0, -0.36, 0.03); g.rotation.set(0.1, 0.7, 0)
+  prop(new THREE.BoxGeometry(0.2, 0.28, 0.012), g, 0, -0.13, 0)
+  const poster = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.2, 0.02), bodyMat); poster.position.set(0, -0.11, 0); g.add(poster)
+  PROPS.card = { g, parent: 'elL' }
+}
+for (const k in PROPS) { const P = PROPS[k]; J[P.parent].add(P.g); P.w = 0; P.g.scale.setScalar(0.0001); P.g.visible = false }
+
 // позы: углы в градусах [x, y, z]; root: p = позиция таза, r = поворот; e = разлёт тела 0..1
 const POSES = [
   { name: 'REACH', root: { p: [0, 0.95, 0], r: [0, -24, 0] }, spine: [4, 0, 0], chest: [0, -12, 0], head: [-4, 26, 0],
@@ -136,6 +168,24 @@ const POSES = [
 const JOINTS = ['spine', 'chest', 'neck', 'head', 'shL', 'elL', 'shR', 'elR', 'hipL', 'knL', 'hipR', 'knR']
 const Z3 = [0, 0, 0]
 const WORK = 2 // индекс секции с каруселью
+const PETS = 4 // индекс секции с галереей pet-проектов
+// В галерее у каждого проекта своя поза. При листании фигура рассыпается на осколки, проворачивается
+// в этом облаке и собирается уже в позу следующего проекта. prop: какой предмет проявляется в руке.
+const PET_POSES = [
+  // рыбак: в три четверти вправо, полуприсед, руки у груди; удочка поднята круто вверх, леска висит отвесно перед ним
+  { name: 'CAST', prop: 'rod', root: { p: [0, 0.9, 0], r: [0, 34, 0] }, spine: [10, 0, 0], chest: [2, 0, 0], head: [14, 10, 0],
+    shL: [-36, 0, 4], elL: [-58, 0, 0], shR: [-30, 0, -10], elR: [-76, 0, 0], hipL: [-28, 0, 4], knL: [34, 0, 0], hipR: [12, 0, -5], knR: [22, 0, 0], e: 0 },
+  // серфер: грудью к нам, присед на широко расставленных ногах, крен влево, руки в стороны, взгляд по ходу
+  { name: 'SURF', root: { p: [0, 0.8, 0], r: [0, 12, 13] }, spine: [12, 0, -4], chest: [0, -10, 0], head: [-4, -56, 6],
+    shL: [-8, 0, 84], elL: [-14, 0, 0], shR: [-4, 0, -72], elR: [-26, 0, 0], hipL: [-34, 0, 20], knL: [54, 0, 0], hipR: [-18, 0, -22], knR: [44, 0, 0], e: 0 },
+  // строитель: в три четверти вправо, ладони перед грудью, над ними парит и вращается кристалл-башня
+  { name: 'BUILD', prop: 'crystal', root: { p: [0, 0.95, 0], r: [0, 42, 0] }, spine: [4, 0, 0], chest: [6, 0, 0], head: [20, 0, 0],
+    shL: [-52, 0, 18], elL: [-56, 0, 0], shR: [-52, 0, -18], elR: [-56, 0, 0], hipL: [0, 0, 5], knL: [2, 0, 0], hipR: [-10, 0, -5], knR: [12, 0, 0], e: 0 },
+  // критик: лицом к нам; левая рука держит карточку с постером на уровне лица, правая у подбородка, голова склонена к карточке
+  { name: 'JUDGE', prop: 'card', root: { p: [0, 0.95, 0], r: [0, 14, 0] }, spine: [-4, 0, 0], chest: [0, 8, 0], head: [6, 16, 10],
+    shL: [-48, 0, 10], elL: [-96, 0, 0], shR: [-30, 0, -22], elR: [-138, 0, 0], hipL: [-6, 0, 6], knL: [10, 0, 0], hipR: [2, 0, -3], knR: [0, 0, 0], e: 0 },
+]
+const SHATTER_MS = 1150 // рассыпаться → провернуться → собраться
 // Жест листания. «Вперёд»: фигура наклоняется к экрану, левая рука (от нас правая) опускается к правому
 // верхнему углу панели и проводит влево над её краем, потом возвращается. «Назад»: зеркально, правой рукой.
 const SWIPE_MS = 1080, SW_T1 = 0.25, SW_T2 = 0.66 // дотянуться · провести · вернуть
@@ -151,7 +201,7 @@ const CAMS = [
   { p: [-2.7, 1.5, 3.0], l: [0.85, 1.05, 0] },
   { p: [0, 1.5, 3.05], l: [0, 1.12, 0], center: true }, // по центру за панелью, чуть дальше, чем в контактах
   { p: [2.3, 0.85, 3.2], l: [-0.95, 0.72, 0] },
-  { p: [1.3, 1.05, 4.2], l: [-1.0, 0.98, 0] },
+  { p: [0.85, 1.14, 4.2], l: [-1.2, 1.02, 0], pets: true }, // ближе, чем было: фигура справа от галереи в полный рост
   { p: [0, 1.52, 2.25], l: [0, 1.5, 0], center: true }, // от пояса до макушки, голова в кадре
 ]
 
@@ -203,6 +253,7 @@ function applyTheme() {
   edgeMat.color.copy(T.edge); edgeMat.opacity = T.edgeA
   slabMat.color.copy(T.slab); slabEdgeMat.color.copy(T.slabEdge); slabEdgeMat.opacity = T.slabEdgeA
   gridMat.color.copy(T.grid); gridMat.opacity = T.gridA
+  propMat.color.copy(T.shard); propMat.emissive.copy(T.shard); propMat.emissiveIntensity = T.emissiveK * 0.42
   hemi.color.copy(T.hemiSky); hemi.groundColor.copy(T.hemiGround); hemi.intensity = T.hemiK
   key.intensity = T.keyK; rimA.color.copy(T.rim); rimB.color.copy(T.rim); rimA.intensity = T.rimK; rimB.intensity = T.rimK * 0.5
   scene.fog.color.copy(T.bg); scene.fog.near = T.fogNear; scene.fog.far = T.fogFar
@@ -282,6 +333,63 @@ $('#carnext').addEventListener('click', () => setSlide(slide + 1))
   addEventListener('pointerup', e => { if (x0 === null) return; const dx = e.clientX - x0; x0 = null; if (Math.abs(dx) > 48) setSlide(slide + (dx < 0 ? 1 : -1)) })
 }
 
+// ---------------------------------------------------------------- галерея pet-проектов
+const pjs = $$('#gal .pj'), gal = $('#gal'), galTabsEl = $('#galtabs')
+let pet = 0, petFrom = 0, shatter = null // shatter: { t0, dir } — фигура рассыпается и собирается в новую позу
+pjs.forEach((s, i) => {
+  const b = document.createElement('button'); b.type = 'button'; b.textContent = s.dataset.name
+  b.addEventListener('click', () => setPet(i)); galTabsEl.append(b)
+})
+const galTabs = [...galTabsEl.children]
+function markPet(i) {
+  galTabs.forEach((t, k) => { t.classList.toggle('on', k === i); t.setAttribute('aria-current', k === i ? 'true' : 'false') })
+  pjs.forEach((s, k) => { s.setAttribute('aria-hidden', k === i ? 'false' : 'true'); s.querySelectorAll('a').forEach(a => { a.tabIndex = k === i ? 0 : -1 }) })
+  $('#galnum').textContent = String(i + 1).padStart(2, '0')
+}
+markPet(0)
+function setPet(i) {
+  i = clamp(i, 0, pjs.length - 1)
+  if (i === pet) return false
+  const dir = i > pet ? 1 : -1, old = pjs[pet]
+  // поза, из которой собираемся: если прошлая сборка не закончилась, стартуем с того, что видно сейчас
+  petFrom = shatter ? (shatterK(performance.now()) > 0.5 ? pet : petFrom) : pet
+  pet = i
+  gal.dataset.d = dir; gal.style.setProperty('--d', dir)
+  old.classList.remove('on'); old.classList.add('gone')
+  setTimeout(() => old.classList.remove('gone'), 720)
+  pjs.forEach((s, k) => { if (k !== i && s !== old) s.classList.remove('on', 'gone') })
+  pjs[i].classList.add('on')
+  markPet(i)
+  shatter = { t0: performance.now(), dir }
+  return true
+}
+const shatterP = now => shatter ? clamp((now - shatter.t0) / (REDUCED ? 1 : SHATTER_MS), 0, 1) : 1
+const shatterK = now => smooth(clamp((shatterP(now) - 0.32) / 0.36, 0, 1)) // смена позы идёт, пока фигура рассыпана
+$('#galprev').addEventListener('click', () => setPet(pet - 1))
+$('#galnext').addEventListener('click', () => setPet(pet + 1))
+{ // свайп пальцем или мышью; после свайпа клик по кадру не открывает ссылку
+  let x0 = null, y0 = 0, moved = false
+  gal.addEventListener('pointerdown', e => { x0 = e.clientX; y0 = e.clientY; moved = false })
+  addEventListener('pointerup', e => {
+    if (x0 === null) return
+    const dx = e.clientX - x0, dy = e.clientY - y0; x0 = null
+    if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.2) { moved = true; setPet(pet + (dx < 0 ? 1 : -1)) }
+  })
+  gal.addEventListener('click', e => { if (moved) { e.preventDefault(); moved = false } }, true)
+  gal.addEventListener('dragstart', e => e.preventDefault())
+}
+// поза секции PETS: смесь поз двух проектов
+const petPose = { root: { p: [0, 0, 0], r: [0, 0, 0] }, e: 0 }
+for (const n of JOINTS) petPose[n] = [0, 0, 0]
+function blendPet(k) {
+  const A = PET_POSES[petFrom], B = PET_POSES[pet]
+  for (const c of ['p', 'r']) for (let j = 0; j < 3; j++) petPose.root[c][j] = lerp(A.root[c][j], B.root[c][j], k)
+  for (const n of JOINTS) { const a = A[n] || Z3, b = B[n] || Z3; for (let j = 0; j < 3; j++) petPose[n][j] = lerp(a[j], b[j], k) }
+  petPose.name = (k > 0.5 ? B : A).name
+  return petPose
+}
+const poseAt = i => i === PETS ? petPose : POSES[i]
+
 // ---------------------------------------------------------------- скролл по блокам
 const currentIndex = () => { let best = 0, d = Infinity; sections.forEach((s, i) => { const k = Math.abs(s.offsetTop - scrollY); if (k < d) { d = k; best = i } }); return best }
 let snap = null, lockUntil = 0
@@ -298,6 +406,7 @@ function step(dir) {
   if (now < lockUntil) return
   const i = currentIndex()
   if (i === WORK && Math.abs(sections[i].offsetTop - scrollY) < 8 && setSlide(slide + dir)) { lockUntil = now + SWIPE_MS + 40; return }
+  if (i === PETS && Math.abs(sections[i].offsetTop - scrollY) < 8 && setPet(pet + dir)) { lockUntil = now + 900; return }
   if (i + dir < 0 || i + dir >= sections.length) return
   goSection(i + dir)
 }
@@ -323,6 +432,7 @@ addEventListener('keydown', e => {
   else if (k === 'Home') { e.preventDefault(); goSection(0) }
   else if (k === 'End') { e.preventDefault(); goSection(sections.length - 1) }
   else if ((k === 'ArrowRight' || k === 'ArrowLeft') && currentIndex() === WORK) setSlide(slide + (k === 'ArrowRight' ? 1 : -1))
+  else if ((k === 'ArrowRight' || k === 'ArrowLeft') && currentIndex() === PETS) setPet(pet + (k === 'ArrowRight' ? 1 : -1))
 })
 
 // ---------------------------------------------------------------- DOM-реакции
@@ -335,7 +445,12 @@ function setActive(i) {
   active = i
   railLinks.forEach((a, k) => a.classList.toggle('on', k === i))
   words.forEach((w, k) => w.classList.toggle('on', k === i))
-  $('#posename').textContent = String(i).padStart(2, '0') + ' · ' + POSES[i].name
+  showPose()
+}
+let poseLabel = ''
+function showPose() {
+  const t = String(active).padStart(2, '0') + ' · ' + (active === PETS ? petPose.name || PET_POSES[pet].name : POSES[active].name)
+  if (t !== poseLabel) { poseLabel = t; $('#posename').textContent = t }
 }
 for (const a of [...railLinks, $('.mark')]) a.addEventListener('click', e => {
   e.preventDefault()
@@ -343,7 +458,7 @@ for (const a of [...railLinks, $('.mark')]) a.addEventListener('click', e => {
 })
 
 // ---------------------------------------------------------------- кадр
-const vP = new THREE.Vector3(), vL = new THREE.Vector3(), look = new THREE.Vector3(0, 1, 0)
+const vP = new THREE.Vector3(), vL = new THREE.Vector3(), look = new THREE.Vector3(0, 1, 0), vT = new THREE.Vector3()
 const elTime = $('#timeval'), elBar = $('#timebar'), elCoords = $('#coords'), elHint = $('#hint'), backdrop = $('.backdrop')
 let last = performance.now(), frame = 0
 
@@ -383,7 +498,13 @@ function tick(now) {
     else gE = 1 - easeIO((p - SW_T2) / (1 - SW_T2))
     if (p >= 1) swipe = null
   }
-  const sw = Math.min(1, gS * 0.5 + gE) // насколько жест «толкает» время
+  // галерея: рассыпаться (sh растёт), провернуться, собраться в позу нового проекта (kp)
+  const sp = shatterP(now), kp = shatterK(now)
+  const sh = shatter ? Math.pow(Math.sin(Math.PI * sp), 0.8) : 0
+  const spinDir = shatter ? shatter.dir : 1
+  if (shatter && sp >= 1) { shatter = null; petFrom = pet }
+  blendPet(kp)
+  const sw = Math.min(1, gS * 0.5 + gE + sh * 0.9) // насколько жест «толкает» время
   timeScale = lerp(timeScale, clamp(0.02 + vel * 0.9 + sw * 0.8, 0.02, 1), 1 - Math.exp(-dt * (vel > timeScale || sw > 0.1 ? 10 : 2.2)))
   worldTime += dt * timeScale * (REDUCED ? 0.2 : 1)
   if (y > 40) elHint.classList.add('gone')
@@ -392,13 +513,17 @@ function tick(now) {
   const raw = prog - i0
   // поза держится в центре секции и быстро меняется на границе
   const k = smooth(clamp((raw - 0.18) / 0.64, 0, 1))
-  const A = POSES[i0], B = POSES[i1]
+  const A = poseAt(i0), B = poseAt(i1)
   setActive(raw > 0.5 ? i1 : i0)
+  const petW = (i0 === PETS ? 1 - k : 0) + (i1 === PETS ? k : 0) // насколько мы «в галерее»
 
   // фигура
   const breath = Math.sin(worldTime * 2.2)
   J.root.position.set(lerp(A.root.p[0], B.root.p[0], k), lerp(A.root.p[1], B.root.p[1], k) + breath * 0.012 + Math.sin(k * Math.PI) * 0.06, lerp(A.root.p[2], B.root.p[2], k))
   J.root.rotation.set(lerp(A.root.r[0], B.root.r[0], k) * D, lerp(A.root.r[1], B.root.r[1], k) * D, lerp(A.root.r[2], B.root.r[2], k) * D)
+  // полный оборот внутри облака осколков: видно, что собирается уже другая фигура
+  J.root.rotation.y += easeIO(clamp((sp - 0.14) / 0.72, 0, 1)) * Math.PI * 2 * spinDir * petW * (shatter ? 1 : 0)
+  J.root.position.y += sh * 0.12 * petW
   for (const n of JOINTS) {
     const a = A[n] || Z3, b = B[n] || Z3
     J[n].rotation.set(lerp(a[0], b[0], k) * D, lerp(a[1], b[1], k) * D, lerp(a[2], b[2], k) * D)
@@ -424,10 +549,29 @@ function tick(now) {
   }
   // разлёт: лёгкий на переходе между позами, быстрый скролл слегка усиливает
   const ex = lerp(A.e, B.e, k) + Math.sin(k * Math.PI) * 0.07 + clamp(vel * 0.04, 0, 0.08)
+  const shx = sh * petW
   for (const m of parts) {
-    const u = m.userData
-    m.position.copy(u.rest).addScaledVector(u.dir, ex * 0.3)
-    m.rotation.set(u.spin.x * ex, u.spin.y * ex, u.spin.z * ex)
+    const u = m.userData, r = ex + shx * 1.7
+    m.position.copy(u.rest).addScaledVector(u.dir, ex * 0.3 + shx * 0.62)
+    m.rotation.set(u.spin.x * r, u.spin.y * r, u.spin.z * r)
+  }
+  // предмет в руке: проявляется, когда фигура собрана в позу своего проекта
+  const shown = PET_POSES[kp > 0.5 ? pet : petFrom].prop
+  for (const key in PROPS) {
+    const P = PROPS[key], want = key === shown ? petW * clamp(1 - shx * 2.2, 0, 1) : 0
+    P.w = lerp(P.w, want, 1 - Math.exp(-dt * (want > P.w ? 7 : 14)))
+    const on = P.w > 0.01
+    P.g.visible = on; if (on) P.g.scale.setScalar(Math.max(P.w, 0.0001))
+    if (P.float !== undefined) { P.g.position.y = P.float + Math.sin(worldTime * 2.4) * 0.03; P.g.rotation.y = worldTime * 1.3 }
+    if (P.tip) {
+      P.line.visible = P.bob.visible = on
+      if (on) {
+        P.tip.getWorldPosition(vT)
+        const sway = Math.sin(worldTime * 1.7) * 0.03
+        P.bob.position.set(vT.x + sway, vT.y - 0.78 * P.w, vT.z + sway * 0.5); P.bob.scale.setScalar(P.w)
+        const a = P.line.geometry.attributes.position; a.setXYZ(0, vT.x, vT.y, vT.z); a.setXYZ(1, P.bob.position.x, P.bob.position.y, P.bob.position.z); a.needsUpdate = true
+      }
+    }
   }
 
   // камера
@@ -460,6 +604,7 @@ function tick(now) {
 
   // HUD: обновляем через кадр, чтобы не дёргать layout
   if (frame % 3 === 0) {
+    if (active === PETS) showPose()
     elTime.textContent = '×' + timeScale.toFixed(2)
     elBar.style.transform = 'scaleX(' + timeScale.toFixed(3) + ')'
     elCoords.textContent = 'X ' + vP.x.toFixed(2) + ' · Y ' + vP.y.toFixed(2) + ' · Z ' + vP.z.toFixed(2)

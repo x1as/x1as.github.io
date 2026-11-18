@@ -179,7 +179,8 @@ main { position: relative; z-index: 3 }
 /* карусель опыта: панель по центру, фигура стоит за ней и держит её руками */
 .s-work { align-items: flex-end; padding-bottom: 78px }
 .s-work::before { background: none !important }
-.s-work .wrap.panel { width: min(1040px, 100%); padding: 22px 34px 0; border: 1px solid var(--line); border-top: 2px solid var(--hot);
+.s-work .wrap.panel { width: min(1040px, 100%); padding: 22px 34px 0 }
+.wrap.panel { border: 1px solid var(--line); border-top: 2px solid var(--hot);
   background: color-mix(in srgb, var(--bg) 84%, transparent); -webkit-backdrop-filter: blur(16px) saturate(120%); backdrop-filter: blur(16px) saturate(120%) }
 .panel::before, .panel::after { content: ''; position: absolute; bottom: -1px; width: 14px; height: 14px; border: solid var(--hot); border-width: 0 0 2px 2px; left: -1px }
 .panel::after { left: auto; right: -1px; border-width: 0 2px 2px 0 }
@@ -217,27 +218,87 @@ main { position: relative; z-index: 3 }
 /* стрелки стоят на краях панели: туда же тянутся руки фигуры */
 .carnav .arrow { position: absolute; top: 50%; width: 52px; height: 64px; margin-top: -32px; padding: 0; display: grid; place-items: center; font-size: 22px;
   background: var(--hot); color: var(--hot-ink); transition: transform .3s var(--ease), filter .2s }
-#carprev { left: -27px; clip-path: polygon(0 0, 100% 0, 100% 100%, 26% 100%, 0 78%) }
-#carnext { right: -27px; clip-path: polygon(0 0, 100% 0, 100% 78%, 74% 100%, 0 100%) }
+#carprev, #galprev { left: -27px; clip-path: polygon(0 0, 100% 0, 100% 100%, 26% 100%, 0 78%) }
+#carnext, #galnext { right: -27px; clip-path: polygon(0 0, 100% 0, 100% 78%, 74% 100%, 0 100%) }
 .carnav .arrow:hover { filter: brightness(1.12) }
-#carprev:hover { transform: translateX(-4px) }
-#carnext:hover { transform: translateX(4px) }
+#carprev:hover, #galprev:hover { transform: translateX(-4px) }
+#carnext:hover, #galnext:hover { transform: translateX(4px) }
 .carnav .arrow:active { transform: scale(.94) }
 
-/* pet projects */
-.pets { margin-top: 26px; border-top: 2px solid var(--ink) }
-.pets li { border-bottom: 1px solid var(--line); padding: 18px 0 16px; position: relative; transition: padding-left .4s var(--ease) }
-.pets li:hover { padding-left: 12px }
-.pets li > a:first-child { display: grid; grid-template-columns: 44px 1fr auto; column-gap: 12px; align-items: baseline }
-.pets .n { font: 500 12px/1 var(--f-mono); letter-spacing: .1em; color: var(--ink-2) }
-.pets b { font: 800 clamp(22px, 2.9vw, 40px)/1 var(--f-display); letter-spacing: -.05em; transition: color .25s }
-.pets i { font-style: normal; color: var(--hot); transition: transform .35s var(--ease) }
-.pets li:hover b { color: var(--hot) }
-.pets li:hover i { transform: translate(3px, -3px) }
-.pets p { grid-column: 2 / -1; color: var(--ink-2); font-size: 15.5px; margin-top: 8px; max-width: 46ch }
-.pets .st { grid-column: 2 / -1; font: 500 11px/1.4 var(--f-mono); letter-spacing: .09em; text-transform: uppercase; color: var(--ink-2); margin-top: 8px }
-.pets .extra { display: inline-block; margin: 10px 0 0 56px; font: 700 11px/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--hot-ink); background: var(--hot); padding: 7px 9px 6px }
-.pets .extra:hover { filter: brightness(1.12) }
+/* pet projects: коллаж на проект. Сетка 12 колонок: большой кадр 8×2 (16:9), рядом высокая колонка текста,
+   снизу полоса из четырёх плиток по 3 колонки (кадр · кадр · факт · кадр, все 16:9). У .alt раскладка зеркальная. */
+.s-pets { padding-top: 92px; padding-bottom: 74px }
+.s-pets::before { background: linear-gradient(90deg, var(--scrim-a) 0%, var(--scrim-a) 40%, var(--scrim-b) 74%) !important }
+.s-pets .wrap.panel { width: min(1080px, 63vw, calc((100svh - 270px) * 1.86)); padding: 20px 26px 0; margin-left: clamp(0px, 3vw, 54px) }
+.s-pets .tag { margin-bottom: 16px }
+.gal { --g: 10px; display: grid; outline: none; touch-action: pan-y; container-type: inline-size; -webkit-user-select: none; user-select: none }
+.gal:focus-visible { outline: 2px solid var(--hot); outline-offset: 6px }
+/* ряд большого кадра: (8 колонок) × 9/16 = 37.5cqw − 1.9px, делим на два; ряд полосы: (3 колонки) × 9/16 */
+.pj { grid-area: 1 / 1; display: grid; gap: var(--g); grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: calc(18.75cqw - 5.9px) calc(18.75cqw - 5.9px) calc(14.06cqw - 3.5px);
+  grid-template-areas: "a a a a a a a a i i i i" "a a a a a a a a i i i i" "b b b c c c f f f d d d"; visibility: hidden }
+.pj.alt { grid-template-areas: "i i i i a a a a a a a a" "i i i i a a a a a a a a" "d d d f f f c c c b b b" }
+.pj.on { visibility: visible; z-index: 1 }
+.pj.gone { visibility: visible; z-index: 0 }
+.t-a { grid-area: a } .t-b { grid-area: b } .t-c { grid-area: c } .t-d { grid-area: d } .t-info { grid-area: i } .t-fact { grid-area: f }
+
+/* плитка: появляется шторкой со стороны листания, с задержкой по номеру */
+.t { position: relative; overflow: hidden; min-width: 0; border: 1px solid var(--line);
+  clip-path: inset(0 0 0 0); opacity: 0; transform: translateX(calc(var(--d, 1) * 28px));
+  transition: opacity .28s var(--ease) calc(var(--i) * 30ms), transform .5s var(--ease) calc(var(--i) * 30ms), clip-path .5s var(--ease) calc(var(--i) * 30ms) }
+.gal[data-d="1"] .pj:not(.on) .t { clip-path: inset(0 0 0 100%) }
+.gal[data-d="-1"] .pj:not(.on) .t { clip-path: inset(0 100% 0 0) }
+.pj.gone .t { opacity: 0; transform: translateX(calc(var(--d, 1) * -36px)) scale(.97); clip-path: inset(0 0 0 0) !important;
+  transition: opacity .32s var(--ease) calc(var(--i) * 24ms), transform .42s var(--ease) calc(var(--i) * 24ms) }
+.pj.on .t { opacity: 1; transform: none; clip-path: inset(0 0 0 0);
+  transition: opacity .45s var(--ease) calc(260ms + var(--i) * 70ms), transform .8s var(--ease) calc(260ms + var(--i) * 70ms), clip-path .8s var(--ease) calc(260ms + var(--i) * 70ms) }
+
+/* кадры */
+a.t { display: block; background: var(--line) }
+.t img { display: block; width: 100%; height: 100%; object-fit: cover; transform: scale(1.12); transition: transform 1.2s var(--ease) calc(260ms + var(--i) * 70ms), filter .4s }
+.pj.on .t img { transform: scale(1.001) }
+.pj.on a.t:hover img { transform: scale(1.045); transition-delay: 0s; transition-duration: .7s }
+a.t::after { content: '↗'; position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; display: grid; place-items: center; font: 700 13px/1 var(--f-mono);
+  background: var(--hot); color: var(--hot-ink); opacity: 0; transform: translate(-4px, 4px); transition: opacity .25s, transform .35s var(--ease) }
+a.t:hover::after, a.t:focus-visible::after { opacity: 1; transform: none }
+a.t:focus-visible { outline: 2px solid var(--hot); outline-offset: 2px }
+.cap { position: absolute; left: 0; bottom: 0; max-width: calc(100% - 12px); padding: 6px 9px 5px; font: 500 10px/1.35 var(--f-mono); letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ink); background: color-mix(in srgb, var(--bg) 86%, transparent); border-top: 1px solid var(--line); border-right: 1px solid var(--line) }
+.t-a .cap { font-size: 11px; padding: 8px 12px 7px }
+
+/* текстовые плитки: вписаны между кадрами */
+.t-info, .t-fact { display: flex; flex-direction: column; padding: clamp(12px, 1.7cqw, 20px); background: color-mix(in srgb, var(--bg) 70%, transparent) }
+.t-info { border-top: 2px solid var(--hot) }
+.kind { font: 500 10px/1.3 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2) }
+.t-info h3 { font: 900 clamp(22px, 3.6cqw, 44px)/.92 var(--f-display); letter-spacing: -.06em; margin: 8px 0 8px; white-space: nowrap }
+.desc { font-size: clamp(12.5px, 1.42cqw, 15.5px); line-height: 1.4; color: var(--ink); text-wrap: pretty }
+.pts { margin-top: 10px; border-top: 1px solid var(--line) }
+.pts li { position: relative; padding: 5px 0 4px 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-bottom: 1px solid var(--line); font-size: clamp(11.5px, 1.25cqw, 13.5px); line-height: 1.35; color: var(--ink-2) }
+.pts li::before { content: ''; position: absolute; left: 1px; top: calc(.5em + 6px); width: 8px; height: 2px; background: var(--hot) }
+.t-info .st { margin-top: auto; padding-top: 10px; font: 500 10px/1.4 var(--f-mono); letter-spacing: .09em; text-transform: uppercase; color: var(--hot) }
+.go { display: flex; gap: 6px; margin-top: 10px }
+.go a { flex: 1; white-space: nowrap; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 8px 8px; font: 700 11px/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase;
+  border: 1px solid var(--line); transition: border-color .25s, color .25s, filter .2s }
+.go a:hover { border-color: var(--ink) }
+.go a i { font-style: normal; color: var(--hot) }
+.go .play { background: var(--hot); color: var(--hot-ink); border-color: var(--hot) }
+.go .play:hover { filter: brightness(1.12); border-color: var(--hot) }
+.t-fact { justify-content: center; border-left: 2px solid var(--hot) }
+.t-fact { padding: clamp(10px, 1.4cqw, 16px) }
+.t-fact b { font: 900 clamp(24px, 3.9cqw, 44px)/.9 var(--f-display); letter-spacing: -.06em; color: var(--hot); font-variant-numeric: tabular-nums; white-space: nowrap }
+.t-fact p { font: 500 clamp(9px, 1cqw, 11px)/1.4 var(--f-mono); letter-spacing: .05em; text-transform: uppercase; margin-top: 7px; color: var(--ink); text-wrap: pretty }
+.s-pets .carnav { margin: 16px -26px 0; padding: 0 26px }
+/* узкая галерея: список фактов не помещается, остаются описание, стек и кнопки */
+@container (max-width: 820px) {
+  .pts { display: none }
+  .pj { grid-template-rows: 22.5cqw 22.5cqw calc(14.06cqw - 3.5px) }
+  .go a { padding: 8px 4px 7px; letter-spacing: .06em }
+}
+/* планшет в портрете: фигура стоит за панелью, галерея на всю ширину */
+@media (min-width: 761px) and (max-aspect-ratio: 4/5) {
+  .s-pets { padding-right: calc(var(--gut) + 56px) }
+  .s-pets .wrap.panel { width: 100%; margin-left: 0 }
+}
 
 .s-contact { align-items: flex-end; padding-bottom: 96px }
 .s-contact .wrap { width: min(1200px, 100%) }
@@ -294,7 +355,25 @@ main { position: relative; z-index: 3 }
   .panel .facts li:first-child::before { top: 50% }
   .carnav { margin: 16px -16px 0; padding: 0 16px }
   .carnav .arrow { position: static; width: 40px; height: auto; margin: 0; background: none; color: var(--hot); clip-path: none !important }
-  #carprev { order: -1 }
+  #carprev, #galprev { order: -1 }
+  /* галерея на телефоне: большой кадр, текст, два кадра, факт; четвёртый кадр прячем */
+  .s-pets { padding: 84px 16px 70px }
+  .s-pets .wrap.panel { width: 100%; margin-left: 0; padding: 14px 12px 0 }
+  .s-pets .carnav { margin: 12px -12px 0; padding: 0 12px }
+  .gal { --g: 8px }
+  .pj, .pj.alt { grid-template-columns: 1fr 1fr; grid-template-rows: none; grid-auto-rows: auto; grid-template-areas: "a a" "i i" "b c" "f f" }
+  .pts { display: none }
+  .t-a { aspect-ratio: 16 / 9 }
+  .t-b, .t-c { aspect-ratio: 16 / 10 }
+  .pj .t-d { display: none }
+  .t-info h3 { font-size: 30px }
+  .desc { font-size: 14.5px }
+  .t-fact { flex-direction: row; align-items: center; column-gap: 14px; border-left: 0; border-top: 2px solid var(--hot); padding: 12px }
+  .t-fact b { font-size: 30px }
+  .t-fact p { flex: 1; margin-top: 0; font-size: 10.5px }
+  .cap { font-size: 9px; padding: 5px 7px 4px }
+  .t-a .cap { font-size: 10px; padding: 6px 9px 5px }
+  .s-pets .tabs button { font-size: 9.5px; letter-spacing: .06em }
   .links { grid-template-columns: 1fr }
   .links a { border-right: 0; margin-right: 0; border-bottom: 1px solid var(--line) }
   .links a:last-child { border-bottom: 0 }
